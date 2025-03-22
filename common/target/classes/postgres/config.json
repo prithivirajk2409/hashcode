@@ -1,0 +1,30 @@
+{
+	"production": {
+		"default": {
+			"poolMaximumCheckoutTime": "60000",
+			"poolMaximumIdleConnections": "2",
+			"poolMaximumActiveConnections": "20"
+		},
+		"hikari": {
+			"default": {
+				"poolMaximumCheckoutTime": "60000",
+				"minimumIdle": "2",
+				"maxPoolSize": "20"
+			}
+		}
+	},
+	"others": {
+		"default": {
+			"poolMaximumCheckoutTime": "60000",
+			"poolMaximumIdleConnections": "2",
+			"poolMaximumActiveConnections": "20"
+		},
+		"hikari": {
+			"default": {
+				"poolMaximumCheckoutTime": "60000",
+				"minimumIdle": "2",
+				"maxPoolSize": "20"
+			}
+		}
+	}
+}

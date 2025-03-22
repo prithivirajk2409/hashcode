@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<setting name="logImpl" value="Log4j2" />
+		<setting name="mapUnderscoreToCamelCase" value="true" />
+	</settings>
+
+	<typeAliases>
+		<typeAlias alias="HCUsers" type="com.hashcode.entity.HCUsers" />
+		<typeAlias alias="HCProblems" type="com.hashcode.entity.HCProblems" />
+		<typeAlias alias="HCUserSubmissions" type="com.hashcode.entity.HCUserSubmissions" />
+		<typeAlias alias="HCCodeExecutionJobs" type="com.hashcode.entity.HCCodeExecutionJobs" />
+		<typeAlias alias="HCCompanyTagMaster" type="com.hashcode.entity.HCCompanyTagMaster" />
+		<typeAlias alias="HCTopicTagMaster" type="com.hashcode.entity.HCTopicTagMaster" />
+		<typeAlias alias="HCProblemCompanyTagMapper" type="com.hashcode.entity.HCProblemCompanyTagMapper" />
+		<typeAlias alias="HCProblemTopicTagMapper" type="com.hashcode.entity.HCProblemTopicTagMapper" />
+		<typeAlias alias="HCTestCases" type="com.hashcode.entity.HCTestCases" />
+	</typeAliases>
+
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<property name="driver" value="org.postgresql.Driver" />
+				<property name="url"
+					value="jdbc:postgresql://localhost:5432/beta-hashcode-db" />
+				<property name="username" value="postgres" />
+				<property name="password" value="${password}" />
+				<property name="poolPingEnabled" value="true" />
+				<property name="poolPingQuery" value="SELECT 1" />
+				<property name="poolMaximumIdleConnections" value="${poolMaximumIdleConnections}" />
+				<property name="poolMaximumActiveConnections" value="${poolMaximumActiveConnections}" />
+				<property name="poolMaximumCheckoutTime" value="${poolMaximumCheckoutTime}" />
+			</dataSource>
+		</environment>
+		<environment id="production">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<property name="driver" value="org.postgresql.Driver" />
+				<property name="url"
+					value="jdbc:postgresql://postgresql-db.cjiesi4ycx7q.us-east-1.rds.amazonaws.com:5432/beta-hashcode-db" />
+				<property name="username" value="postgres" />
+				<property name="password" value="${password}" />
+				<property name="poolPingEnabled" value="true" />
+				<property name="poolPingQuery" value="SELECT 1" />
+				<property name="poolMaximumIdleConnections" value="${poolMaximumIdleConnections}" />
+				<property name="poolMaximumActiveConnections" value="${poolMaximumActiveConnections}" />
+				<property name="poolMaximumCheckoutTime" value="${poolMaximumCheckoutTime}" />
+			</dataSource>
+		</environment>
+		
+	</environments>
+
+	<mappers>
+		<mapper resource="com/hashcode/persistence/hcinternalhealth.xml" />
+		<mapper resource="com/hashcode/persistence/hcusers.xml" />
+		<mapper resource="com/hashcode/persistence/hcproblems.xml" />
+		<mapper resource="com/hashcode/persistence/hcusersubmissions.xml" />
+		<mapper resource="com/hashcode/persistence/hccodeexecutionjobs.xml" />
+		<mapper resource="com/hashcode/persistence/hccompanytagmaster.xml" />
+		<mapper resource="com/hashcode/persistence/hctopictagmaster.xml" />
+		<mapper resource="com/hashcode/persistence/hcproblemcompanytagmapper.xml" />
+		<mapper resource="com/hashcode/persistence/hcproblemtopictagmapper.xml" />
+		<mapper resource="com/hashcode/persistence/hctestcases.xml" />
+	</mappers>
+</configuration>
+ 

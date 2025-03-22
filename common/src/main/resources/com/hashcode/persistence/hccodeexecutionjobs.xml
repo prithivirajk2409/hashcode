@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hashcode.persistence.HCCodeExecutionJobs">
+	<insert id="insert" parameterType="HCCodeExecutionJobs"
+		useGeneratedKeys="true" keyProperty="executionJobId">
+	<![CDATA[ 
+		INSERT /*Insert*/   INTO hccodeexecutionjobs 
+			(status, execution_type, created, updated)
+		VALUES
+			(#{status}, #{executionType}, now(), now())
+	]]>
+	</insert>
+
+	<update id="update" parameterType="HCCodeExecutionJobs">
+	<![CDATA[ 
+		UPDATE /*update*/  
+			hccodeexecutionjobs 
+		SET
+			status = #{status},
+			execution_type = #{executionType},
+			metadata = #{metadata}::jsonb,
+			submission_id = #{submissionId},
+			updated = now()
+		WHERE
+			execution_job_id = #{executionJobId}
+	]]>
+	</update>
+
+	<select id="getExecutionJobById" parameterType="java.util.Map"
+		resultType="HCCodeExecutionJobs">
+	<![CDATA[ 
+		SELECT 
+			* 
+		FROM 
+			hccodeexecutionjobs
+		WHERE
+			execution_job_id= #{executionJobId}
+	]]>
+	</select>
+</mapper>

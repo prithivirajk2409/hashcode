@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hashcode.persistence.HCProblems">
+	<select id="getProblemsByPageOffset" parameterType="java.util.Map"
+		resultType="HCProblems">
+	<![CDATA[ 
+		SELECT 
+			* 
+		FROM 
+			hcproblems
+		ORDER BY
+			problem_id ASC
+		LIMIT 
+			#{pageSize}
+		OFFSET
+			#{offset}
+		
+	]]>
+	</select>
+
+	<select id="getProblemBySlug" parameterType="java.util.Map"
+		resultType="HCProblems">
+	<![CDATA[ 
+		SELECT 
+			* 
+		FROM 
+			hcproblems
+		WHERE
+			slug= #{slug}
+	]]>
+	</select>
+	
+	<select id="getProblemById" parameterType="java.util.Map"
+		resultType="HCProblems">
+	<![CDATA[ 
+		SELECT 
+			* 
+		FROM 
+			hcproblems
+		WHERE
+			problem_id= #{problemId}
+	]]>
+	</select>
+
+
+	<select id="getTotalProblemsCount" resultType="java.lang.Integer">
+	<![CDATA[ 
+		SELECT 
+			count(*) 
+		FROM 
+			hcproblems
+	]]>
+	</select>
+
+</mapper>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hashcode.persistence.HCUserSubmissions">
+
+	<insert id="insert" parameterType="HCUserSubmissions"
+		useGeneratedKeys="true" keyProperty="submissionId">
+	<![CDATA[ 
+		INSERT /*Insert*/   INTO hcusersubmissions 
+			(problem_id, user_id, programming_language, submitted_code, acceptance_status, execution_time, execution_memory,
+			 execution_job_id, metadata, created, updated)
+		VALUES
+			(#{problemId}, #{userId}, #{programmingLanguage}, #{submittedCode}, #{acceptanceStatus},
+			 #{executionTime}, #{executionMemory}, #{executionJobId}, #{metadata}::jsonb , now(), now())
+	]]>
+	</insert>
+
+	<select id="getUserSubmissionBySubmissionId"
+		parameterType="java.util.Map" resultType="HCUserSubmissions">
+	<![CDATA[ 
+		SELECT 
+			*
+		FROM
+			hcusersubmissions
+		WHERE
+			submission_id = #{submissionId}
+	]]>
+	</select>
+
+	<select id="getUserSubmissionsForUserAndProblem"
+		parameterType="java.util.Map" resultType="HCUserSubmissions">
+	<![CDATA[ 
+		SELECT 
+			*
+		FROM
+			hcusersubmissions
+		WHERE
+			user_id = #{userId}
+		AND
+			problem_id = #{problemId}
+		ORDER BY
+			created 
+		DESC
+	]]>
+	</select>
+
+	<select id="getAcceptanceRateForProblem" parameterType="java.util.Map"
+		resultType="java.lang.Double">
+	<![CDATA[ 
+		WITH submission_counts AS(
+			SELECT 
+		        COUNT(*) AS total_count,
+		        COUNT(CASE WHEN acceptance_status = #{acceptanceStatus} THEN 1 END) AS accepted_count
+		    FROM 
+		    	hcusersubmissions
+		    WHERE 
+		    	problem_id = #{problemId}
+		)
+		SELECT 
+			ROUND(
+			    CASE 
+			        WHEN total_count = 0 THEN 0
+			        ELSE accepted_count::DECIMAL / total_count
+			    END, 2) * 100 AS accepted_rate
+			FROM submission_counts;
+	]]>
+	</select>
+
+	<select id="getAcceptanceStatusForUserAndProblem"
+		parameterType="java.util.Map" resultType="java.lang.String">
+	<![CDATA[ 
+		SELECT
+			acceptance_status 
+		FROM
+			hcusersubmissions
+		WHERE
+			problem_id= #{problemId}
+		AND
+			user_id = #{userId}
+		ORDER BY 
+			CASE acceptance_status
+			    WHEN 'ACCEPTED' THEN 1
+			    WHEN 'WRONG_ANSWER' THEN 2
+			    WHEN 'TIME_LIMIT_EXCEEDED' THEN 3
+			    WHEN 'MEMORY_LIMIT_EXCEEDED' THEN 4
+			    WHEN 'RUNTIME_ERROR' THEN 5
+			    WHEN 'UNKNOWN_ERROR' THEN 6
+			    WHEN 'COMPILATION_ERROR' THEN 7
+			    ELSE 8
+			  END
+		LIMIT 
+			1;
+	]]>
+	</select>
+</mapper>

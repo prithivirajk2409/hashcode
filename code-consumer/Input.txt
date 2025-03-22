@@ -1,0 +1,59 @@
+> Expected.txt
+> FinalResult.txt
+
+json_string=$(cat input_array.txt)
+
+unescaped_json=$(echo "$json_string" | jq -r '. | fromjson')
+
+maxExecutionTime=0
+maxExecutionMemory=0
+passed_test_cases=0
+total_test_cases=$(echo "$unescaped_json" | jq 'length')
+
+temp_result="{"
+
+echo "$unescaped_json" | jq -c '.[]' | while read -r json_item; do
+  input=$(echo "$json_item" | jq -r '.input')
+  expected=$(echo "$json_item" | jq -r '.expected')
+  
+  echo -n "$input" > Input.txt
+  echo -n "$expected" > Expected.txt
+
+  ./run.sh 
+
+  if [ "$(cat Expected.txt)" != "ACCEPTED" ]; then
+    if [ "$(cat Expected.txt)" == "WRONG_ANSWER" ]; then
+      temp_result+="\"output\":\"$(cat Output.txt)\","
+    fi
+    temp_result+="\"input\":\"$(cat Input.txt)\","
+    temp_result+="\"expected\":\"$(cat Expected.txt)\","
+    temp_result+="\"acceptanceStatus\":\"$(cat AcceptanceStatus.txt)\","
+    temp_result+="\"runtimeOutput\":\"$(cat RuntimeOutput.txt)\","
+    temp_result+="\"processedTestCases\":$passed_test_cases,"
+    temp_result+="\"totalTestCases\":$total_test_cases"
+    break
+  fi
+  executionTime=$(sed -n '1p' Metadata.txt)
+  executionMemory=$(sed -n '2p' Metadata.txt)
+  ((passed_test_cases++))
+  echo -e "$executionTime"
+  echo -e "$executionMemory"
+done
+
+maxExecutionTime=$(echo "$executionTime $maxExecutionTime" | awk '{print ($1>$2)?$1:$2}')
+maxExecutionMemory=$(echo "$executionMemory $maxExecutionMemory" | awk '{print ($1>$2)?$1:$2}')
+
+temp_result+="\"executionTime\":\"$maxExecutionTime\","
+temp_result+="\"executionMemory\":\"$maxExecutionMemory\","
+temp_result+="\"acceptanceStatus\":\"$(cat AcceptanceStatus.txt)\","
+temp_result+="\"processedTestCases\":\"$passed_test_cases\","
+temp_result+="\"totalTestCases\":\"$total_test_cases\","
+
+temp_result+="}"
+
+echo "$temp_result" >> FinalResult.txt
+
+echo "Max Execution Time: $maxExecutionTime"
+echo "Max Execution Memory: $maxExecutionMemory"
+
+
